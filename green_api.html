@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/jpeg" href="favicon.jpg">
+    <title>SWD green_api test</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="row">
+
+            <!-- swd conrol -->
+            <div class="col-md-6">
+                <label for="control"><b>Управление:</b></label>
+                <div class="form-group" id="control">
+
+                    <label for="idInstance">Instance ID:</label>
+                    <input type="text" id="idInstance" class="form-control" required placeholder="Enter instance ID"
+                        value="7103959413">
+
+                    <label for="apiTokenInstance">api Token Instance:</label>
+                    <input type="text" id="apiTokenInstance" class="form-control" required
+                        placeholder="Enter api Token Instance"
+                        value="583e7ea782a244a8b1c956406e4e00051c095bef2d204fabae">
+
+                    <label for="getSettings"></label>
+                    <button type="button" id="getSettings" class="btn btn-primary btn-block">Get Settings</button>
+
+                    <hr>
+
+                    <label for="GetStateInstance"></label>
+                    <button type="button" id="GetStateInstance" class="btn btn-primary btn-block">Get State Instance</button>
+
+                    <hr>
+
+                    <label for="phone">Phone Number:</label>
+                    <input type="text" id="phone" class="form-control"
+                        placeholder="Enter phone number (e.g., 77014503514)" value="77014503514">
+
+                    <label for="message">Message</label>
+                    <textarea id="message" class="form-control" rows="2" placeholder="Please, write message"></textarea>
+
+                    <label for="SendMessage"></label>
+                    <button type="button" id="SendMessage" class="btn btn-primary btn-block">Send Message</button>
+
+                    <hr>
+
+                    <label for="image_phone">Phone Number:</label>
+                    <input type="text" id="image_phone" class="form-control"
+                        placeholder="Enter phone number (e.g., 77014503514)" value="77014503514">
+
+                    <label for="image_url">Image URL</label>
+                    <input id="image_url" type="text" class="form-control" placeholder="Please, paste URL image" value="https://avatars.dzeninfra.ru/get-zen_doc/271828/pub_6611233d42aca9668e72fec4_661123f00008eb66489f5f12/scale_1200">
+
+                    <label for="SendFileByUrl"></label>
+                    <button type="button" id="SendFileByUrl" class="btn btn-primary btn-block">Send File By Url</button>
+
+                </div>
+            </div>
+
+            <!-- swd answer body -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="answer"><b>Ответ:</b></label>
+                    <textarea id="answer" class="form-control" rows="20" placeholder="..." readonly></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- SWD JavaScript to handle the GET request -->
+    <script>
+
+        var apiUrl = 'https://7103.api.greenapi.com';
+
+        // getSettings
+        document.getElementById('getSettings').onclick = function () {
+            var idInstance = document.getElementById('idInstance').value;
+            var apiTokenInstance = document.getElementById('apiTokenInstance').value;
+
+            if (idInstance && apiTokenInstance) {
+
+                var url = `${apiUrl}/waInstance${idInstance}/getSettings/${apiTokenInstance}`;
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('answer').value = JSON.stringify(data, null, 2);
+                    })
+                    .catch(error => {
+                        document.getElementById('answer').value = 'Ошибка получения данных';
+                        console.error('Error fetching data:', error);
+                    });
+            } else {
+                alert('Please enter both Instance ID and API Token Instance');
+            }
+        };
+
+        //GetStateInstance
+        document.getElementById('GetStateInstance').onclick = function () {
+            var idInstance = document.getElementById('idInstance').value;
+            var apiTokenInstance = document.getElementById('apiTokenInstance').value;
+
+            if (idInstance && apiTokenInstance) {
+
+                var url = `${apiUrl}/waInstance${idInstance}/getStateInstance/${apiTokenInstance}`;
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('answer').value = JSON.stringify(data, null, 2);
+                    })
+                    .catch(error => {
+                        document.getElementById('answer').value = 'Ошибка получения данных';
+                        console.error('Error fetching data:', error);
+                    });
+            } else {
+                alert('Please enter both Instance ID and API Token Instance');
+            }
+        };
+
+
+        //SendMessage
+        document.getElementById('SendMessage').onclick = function () {
+            var idInstance = document.getElementById('idInstance').value;
+            var apiTokenInstance = document.getElementById('apiTokenInstance').value;
+            var phone = document.getElementById('phone').value + '@c.us';
+            var message = document.getElementById('message').value;
+
+
+            if (idInstance && apiTokenInstance && phone && message) {
+
+                var url = `${apiUrl}/waInstance${idInstance}/sendMessage/${apiTokenInstance}`;
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chatId: phone,
+                        message: message
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('answer').value = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    document.getElementById('answer').value = 'Ошибка получения данных';
+                    console.error('Error fetching data:', error);
+                });
+            } else {
+                alert('Please enter both Instance ID. API Token Instance, phone and message');
+            }
+        };
+
+        //SendFileByUrl
+        document.getElementById('SendFileByUrl').onclick = function () {
+            var idInstance = document.getElementById('idInstance').value;
+            var apiTokenInstance = document.getElementById('apiTokenInstance').value;
+            var image_phone = document.getElementById('image_phone').value + '@c.us';
+            var image_url = document.getElementById('image_url').value;
+
+
+            if (idInstance && apiTokenInstance && phone && message) {
+
+                var url = `${apiUrl}/waInstance${idInstance}/sendFileByUrl/${apiTokenInstance}`;
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chatId: image_phone,
+                        urlFile: image_url,
+                        fileName: "SendFileByUrl", 
+                        caption: "SendFileByUrl"
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('answer').value = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    document.getElementById('answer').value = 'Ошибка получения данных';
+                    console.error('Error fetching data:', error);
+                });
+            } else {
+                alert('Please enter both Instance ID. API Token Instance, image_phone and URL');
+            }
+        };
+
+
+    </script>
+
+</body>
+
+</html>
